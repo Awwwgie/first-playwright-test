@@ -9,7 +9,8 @@ export default defineConfig({
     baseURL: 'https://playwright.dev',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure'
+    video: 'retain-on-failure',
+    headless: false
   },
   projects: [
     {
