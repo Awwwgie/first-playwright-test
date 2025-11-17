@@ -2,10 +2,10 @@ import {test, expect} from '@playwright/test';
 
 test.describe('Add/Remove Elements Page', () => {
     test('Add/Remove Elements link works and page loads correctly', async ({page}) => {
-            await page.goto('https://the-internet.herokuapp.com/');
-            await page.getByRole('link', {name: 'Add/Remove Elements'}).click();
-            await expect(page).toHaveURL(/add_remove_elements/);
-            await expect(page.getByRole('heading', {level: 3})).toContainText('Add/Remove Elements');
+        await page.goto('https://the-internet.herokuapp.com/');
+        await page.getByRole('link', {name: 'Add/Remove Elements'}).click();
+        await expect(page).toHaveURL(/add_remove_elements/);
+        await expect(page.getByRole('heading', {level: 3})).toContainText('Add/Remove Elements');
     })
 
     test('Clicking "Add Element" button adds a new element', async ({page}) => {
