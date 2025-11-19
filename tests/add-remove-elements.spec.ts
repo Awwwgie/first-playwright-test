@@ -57,7 +57,7 @@ test.describe('Add/Remove Elements Page', () => {
         await expect(page.getByRole('button', {name: 'Delete'})).not.toBeVisible();
     });
 
-    // Random spam click edge cases
+    // Random edge cases
     test('Rapid clicks on "Add Element" button', async ({page}) => {
         await page.goto('https://the-internet.herokuapp.com/add_remove_elements/');
 
@@ -71,7 +71,6 @@ test.describe('Add/Remove Elements Page', () => {
         await expect(deleteButtons).toHaveCount(10);
     });
 
-    // Test expected to fail 
     test('Unavailable rapid clicks on "Add Element" button', async ({page}) => {
         test.fail();
         await page.goto('https://the-internet.herokuapp.com/add_remove_elements/');
@@ -113,4 +112,25 @@ test.describe('Add/Remove Elements Page', () => {
         const deleteButtons = page.getByRole('button', {name:'Delete'});
         await expect(deleteButtons).toHaveCount(1000);
     });
+
+    test('Correct state after multiple add/remove', async ({page}) => {
+        await page.goto('https://the-internet.herokuapp.com/add_remove_elements/');
+
+        for(let i = 0; i < 10; i++) {
+            await page.getByRole('button', {name: 'Add Element'}).click();
+        }
+
+        for (let i = 0; i < 4; i++) {
+            await page.getByRole('button', {name: 'Delete'}).first().click();
+        }
+
+        const deleteButtons = page.getByRole('button', {name: 'Delete'});
+        await expect(deleteButtons).toHaveCount(6);
+
+        for(let i = 0; i < 2; i++) {
+            await page.getByRole('button', {name:'Add Element'}).click();
+        }
+
+        await expect(deleteButtons).toHaveCount(8);
+    }) 
 });
