@@ -153,4 +153,17 @@ test.describe('Add/Remove Elements Page', () => {
         await expect(page.getByRole('button', {name: 'Add Element'})).toBeVisible();
         await expect(page.getByRole('button', {name: 'Add Element'})).toBeEnabled();
     });
+
+    test('Delete buttons are added in correct order', async ({page}) => {
+        await page.goto('https://the-internet.herokuapp.com/add_remove_elements/');
+    
+        await page.getByRole('button', {name: 'Add Element'}).click();
+        await page.getByRole('button', {name: 'Add Element'}).click();
+        await page.getByRole('button', {name: 'Add Element'}).click();
+
+        await expect(page.locator('.added-manually').first()).toBeVisible();
+        await expect(page.locator('#elements button').nth(1)).toBeVisible();
+        await expect(page.locator('xpath=//div[@id="elements"]/button[last()]')).toBeVisible();
+
+    });
 });
