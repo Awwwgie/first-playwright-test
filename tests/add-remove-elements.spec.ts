@@ -132,5 +132,25 @@ test.describe('Add/Remove Elements Page', () => {
         }
 
         await expect(deleteButtons).toHaveCount(8);
-    }) 
+    });
+
+    test('Add Element button works after Deleting', async ({page}) => {
+        await page.goto('https://the-internet.herokuapp.com/add_remove_elements/');
+
+        await page.getByRole('button', {name: 'Add Element'}).click();
+        await page.getByRole('button', {name: 'Delete'}).click();
+
+        await page.getByRole('button', {name: 'Add Element'}).click();
+        await expect(page.getByRole('button', {name: 'Delete'})).toBeVisible();
+    });
+
+    test('Add Element button remains visible after adding elements', async ({page}) => {
+        await page.goto('https://the-internet.herokuapp.com/add_remove_elements/');
+    
+        await page.getByRole('button', {name: 'Add Element'}).click();
+        await page.getByRole('button', {name: 'Add Element'}).click();
+    
+        await expect(page.getByRole('button', {name: 'Add Element'})).toBeVisible();
+        await expect(page.getByRole('button', {name: 'Add Element'})).toBeEnabled();
+    });
 });
