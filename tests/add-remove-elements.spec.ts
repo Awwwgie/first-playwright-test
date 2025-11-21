@@ -20,8 +20,7 @@ test.describe('Add/Remove Elements Page', () => {
         await page.getByRole('button', {name: 'Add Element'}).click();
         await page.getByRole('button', {name: 'Add Element'}).click();
     
-        const deleteButtons = page.getByRole('button', {name: 'Delete'});
-        await expect(deleteButtons).toHaveCount(3);
+        await expect(page.locator('.added-manually')).toHaveCount(3);
     });
 
     test('Clicking "Delete" button removes the element', async ({page}) => {
@@ -39,8 +38,7 @@ test.describe('Add/Remove Elements Page', () => {
         
         await page.getByRole('button', {name: 'Delete'}).first().click();
         
-        const deleteButtons = page.getByRole('button', {name: 'Delete'});
-        await expect(deleteButtons).toHaveCount(2);
+        await expect(page.locator('.added-manually')).toHaveCount(2);
     });
 
     test('Clicking "Delete" on all Delete buttons removes all the elements', async ({page}) => {
@@ -61,45 +59,38 @@ test.describe('Add/Remove Elements Page', () => {
     test('Rapid clicks on "Add Element" button', async ({page}) => {
         await page.goto('https://the-internet.herokuapp.com/add_remove_elements/');
 
-        const addButton = page.getByRole('button', {name: "Add Element"});
-
         for (let i=0; i < 10; i++) {
-            await addButton.click();
+            await page.getByRole('button', {name: "Add Element"}).click();
         }
 
-        const deleteButtons = page.getByRole('button', {name: "Delete"});
-        await expect(deleteButtons).toHaveCount(10);
+        await expect(page.locator("button[onclick='deleteElement()']")).toHaveCount(10);
     });
 
     test('Unavailable rapid clicks on "Add Element" button', async ({page}) => {
+
         test.fail();
+
         await page.goto('https://the-internet.herokuapp.com/add_remove_elements/');
 
-        const addButton = page.getByRole('button', {name: "Add Element"});
-
         for (let i=0; i < 10; i++) {
-            await addButton.click();
+            await page.getByText('Add Element', {exact: true}).click();
         }
 
-        const deleteButtons = page.getByRole('button', {name: "Delete"});
-        await expect(deleteButtons).toHaveCount(1);
+        await expect(page.locator("button[onclick='deleteElement()']")).toHaveCount(1);
     });
 
     test('Staggered rapid clicks on "Add Element" button', async ({page}) => {
         await page.goto('https://the-internet.herokuapp.com/add_remove_elements/');
 
-        const addButton = page.getByRole('button', {name: "Add Element"});
-
         for (let i=0; i < 10; i++) {
-            await addButton.click();
+            await page.locator("//button[normalize-space()='Add Element']").click();
             await page.waitForTimeout(600);
         }
 
-        const deleteButtons = page.getByRole('button', {name: "Delete"});
-        await expect(deleteButtons).toHaveCount(10);
+        await expect(page.locator('button.added-manually')).toHaveCount(10);
     });
 
-    test('Adding X elements WITHOUT breaking', async ({page}) => {
+    test('Adding X elements without breaking', async ({page}) => {
 
         test.setTimeout(0);
 
@@ -109,8 +100,7 @@ test.describe('Add/Remove Elements Page', () => {
             await page.getByRole('button', {name: 'Add Element'}).click();
         }
 
-        const deleteButtons = page.getByRole('button', {name:'Delete'});
-        await expect(deleteButtons).toHaveCount(1000);
+        await expect(page.getByText('Delete')).toHaveCount(1000);
     });
 
     test('Correct state after multiple add/remove', async ({page}) => {
@@ -164,6 +154,15 @@ test.describe('Add/Remove Elements Page', () => {
         await expect(page.locator('.added-manually').first()).toBeVisible();
         await expect(page.locator('#elements button').nth(1)).toBeVisible();
         await expect(page.locator('xpath=//div[@id="elements"]/button[last()]')).toBeVisible();
-
     });
+
+    test('Add Element using keyboard', async ({page}) => {
+        await page.goto('https://the-internet.herokuapp.com/add_remove_elements/');
+
+        await page.getByRole('button', { name: 'Add Element' }).focus();
+        await page.keyboard.press('Enter');
+
+        await expect(page.locator('.added-manually').first()).toBeVisible();
+    });
+    
 });
